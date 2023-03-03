@@ -1,10 +1,10 @@
 NAME		= philo
 
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror -pthread
 
 INC_DIR		= ./
 
-SRC_NAME	= philo
+SRC_NAME	= philo	utils
 SRCS		= $(addsuffix .c, $(SRC_NAME))
 OBJS		= $(addsuffix .o, $(SRC_NAME))
 
