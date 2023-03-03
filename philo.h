@@ -28,14 +28,11 @@ typedef struct s_arg
 
 typedef struct s_philo
 {
-	int	pid;
 	int	status;
 	
 }	t_philo;
-
 //philo
 
 //utils
 int	ft_atoi(const char *str, int *num);
-
 #endif
