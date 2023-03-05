@@ -23,16 +23,19 @@ typedef struct s_arg
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
-	int	num_of_times;
+	int	num_of_times_to_eat;
 }	t_arg;
 
 typedef struct s_philo
 {
-	int	status;
-	
+	int	id;
+	int	timestamp;
+	int	eat_count;
 }	t_philo;
 //philo
 
 //utils
-int	ft_atoi(const char *str, int *num);
+int		ft_atoi(const char *str, int *num);
+//philo_tuils
+t_philo	*init_philo(t_arg *arg);
 #endif
