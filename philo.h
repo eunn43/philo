@@ -10,6 +10,7 @@
 
 enum	e_status
 {
+	INIT,
 	FORK,
 	EATING,
 	SLEEPING,
@@ -19,18 +20,23 @@ enum	e_status
 
 typedef struct s_arg
 {
-	int	num_of_philo;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	num_of_times_to_eat;
+	int				num_of_philo;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				num_of_times_to_eat;
+	pthread_mutex_t	*print;
+	pthread_mutex_t	*forks;
 }	t_arg;
 
 typedef struct s_philo
 {
-	int	id;
-	int	timestamp;
-	int	eat_count;
+	int		id;
+	int		next_id;
+	int		stat;
+	timeval	timestamp;
+	int		eat_count;
+	t_arg	*arg;
 }	t_philo;
 //philo
 
