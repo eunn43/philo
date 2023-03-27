@@ -15,7 +15,7 @@ t_philo *init_philo(t_arg *arg)
 		philo[i].next_id = i + 1;
 		if (i + 1 == arg->num_of_philo)
 			philo[i].next_id = 0;
-		philo[i].stat = INIT;
+		//philo[i].stat = INIT;
         philo[i].eat_count = 0;
 		philo[i].arg = arg;
         i++;
