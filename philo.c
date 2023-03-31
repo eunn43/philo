@@ -6,7 +6,7 @@
 /*   By: seonjeon <seonjeon@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 14:48:16 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/03/31 16:51:21 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/03/31 18:24:07 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,16 @@ void	*ft_philo_proc(void *data)
 	{
 		if (philo->id % 2)
 			usleep(philo->arg->time_to_eat);
+		pthread_mutex_lock(&philo->arg->forks[philo->id].access);
+		philo->arg->forks[philo->id].status = 1;
+		ft_philo_stat_print(philo, FORK);
+		if (philo->id == philo->next_id)
+		{
+			usleep(philo->arg->time_to_die * 1000);
+			ft_philo_stat_print(philo, DIED);
+			pthread_mutex_unlock(&philo->arg->forks[philo->id].access);
+			break ;
+		}
 		ft_philo_eating(philo);
 		ft_philo_sleeping(philo);
 		ft_philo_thinking(philo);
