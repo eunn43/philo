@@ -4,7 +4,10 @@ CFLAGS		= -Wall -Wextra -Werror -pthread
 
 INC_DIR		= ./
 
-SRC_NAME	= philo	utils philo_utils
+SRC_NAME	=	philo	\
+				init	\
+				utils	\
+				philo_utils
 SRCS		= $(addsuffix .c, $(SRC_NAME))
 OBJS		= $(addsuffix .o, $(SRC_NAME))
 

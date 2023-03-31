@@ -1,4 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: seonjeon <seonjeon@student.42seoul.kr>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/31 15:04:34 by seonjeon          #+#    #+#             */
+/*   Updated: 2023/03/31 15:24:42 by seonjeon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
+
+long long	ft_get_time(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
 
 int	ft_atoi(const char *str, int *num)
 {
@@ -21,7 +41,7 @@ int	ft_atoi(const char *str, int *num)
 		result += str[i++] - '0';
 	}
 	result = sign * result;
-	if (result > INT_MAX || result < INT_MIN)
+	if (result > INT_MAX || result < 1)
 		return (1);
 	*num = result;
 	return (0);

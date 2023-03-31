@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: seonjeon <seonjeon@student.42seoul.kr>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/31 15:02:07 by seonjeon          #+#    #+#             */
+/*   Updated: 2023/03/31 18:17:50 by seonjeon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -7,7 +19,6 @@
 # include <sys/time.h>	//gettimeofday
 # include <pthread.h>
 # include <limits.h>
-# include <string.h>	//memset
 
 enum	e_status
 {
@@ -21,8 +32,8 @@ enum	e_status
 
 typedef struct s_fork
 {
-	int	status;
-	pthread_mutex_t access;
+	int				status;
+	pthread_mutex_t	access;
 }	t_fork;
 
 typedef struct s_arg
@@ -35,21 +46,44 @@ typedef struct s_arg
 	int				proc_flag;
 	t_fork			*forks;
 	pthread_mutex_t	print;
+	long long		start_time;
 }	t_arg;
 
 typedef struct s_philo
 {
 	int			id;
 	int			next_id;
-	//int			stat;
-	long long	last_eat_time;
 	int			eat_count;
+	long long	last_eat_time;
 	t_arg		*arg;
 }	t_philo;
+
+//color
+# define CLIGHT_CYAN	"\x1b[96m"
+# define CBLUE			"\x1b[34m"
+# define CRED			"\x1b[31m"
+# define CRESET			"\x1b[0m"
+
 //philo
+void		*ft_philo_proc(void *data);
+void		ft_check_philo_died(t_arg *arg, t_philo *philo);
+void		ft_pthread(t_arg *arg, t_philo *philo);
+
+//init
+int			init_forks(t_arg **arg);
+t_arg		*set_arg(char **av);
+t_philo		*init_philo(t_arg *arg);
+void		free_arg(t_arg *arg);
+void		free_philo(t_philo *philo);
+
+//philo_utils
+void		ft_philo_doing(t_philo *philo, long long time);
+void		ft_philo_stat_print(t_philo *philo, int stat);
+void		ft_philo_eating(t_philo *philo);
+void		ft_philo_sleeping(t_philo *philo);
+void		ft_philo_thinking(t_philo *philo);
 
 //utils
-int		ft_atoi(const char *str, int *num);
-//philo_tuils
-t_philo	*init_philo(t_arg *arg);
+long long	ft_get_time(void);
+int			ft_atoi(const char *str, int *num);
 #endif
