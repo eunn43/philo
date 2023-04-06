@@ -21,8 +21,6 @@ void	*ft_philo_proc(void *data)
 		usleep(100);
 	while (philo->arg->proc_flag)
 	{
-		if (philo->id % 2)
-			usleep(philo->arg->time_to_eat);
 		pthread_mutex_lock(&philo->arg->forks[philo->id].access);
 		philo->arg->forks[philo->id].status = 1;
 		ft_philo_stat_print(philo, FORK);

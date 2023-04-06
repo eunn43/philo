@@ -6,7 +6,7 @@
 /*   By: seonjeon <seonjeon@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:04:13 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/03/31 18:24:23 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/04/06 13:23:13 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_philo_doing(t_philo *philo, long long time)
 	{
 		if (ft_get_time() - cur_time >= time)
 			return ;
-		usleep(time * 100);
+		usleep(100);
 	}
 }
 
@@ -34,16 +34,16 @@ void	ft_philo_stat_print(t_philo *philo, int stat)
 	pthread_mutex_lock(&philo->arg->print);
 	time = ft_get_time() - philo->arg->start_time;
 	if (philo->arg->proc_flag && stat == FORK)
-		printf("%lld  %d  has taken a fork\n", time, philo->id + 1);
+		printf("%lld %d has taken a fork\n", time, philo->id + 1);
 	else if (philo->arg->proc_flag && stat == EATING)
-		printf(CLIGHT_CYAN "%lld  %d  is eating\n" CRESET, time, philo->id + 1);
+		printf(CLIGHT_CYAN "%lld %d is eating\n" CRESET, time, philo->id + 1);
 	else if (philo->arg->proc_flag && stat == SLEEPING)
-		printf("%lld  %d  is sleeping\n", time, philo->id + 1);
+		printf("%lld %d is sleeping\n", time, philo->id + 1);
 	else if (philo->arg->proc_flag && stat == THINKING)
-		printf(CBLUE "%lld  %d  is thinking\n" CRESET, time, philo->id + 1);
+		printf(CBLUE "%lld %d is thinking\n" CRESET, time, philo->id + 1);
 	else if (philo->arg->proc_flag && stat == DIED)
 	{
-		printf(CRED "%lld  %d  died\n" CRESET, time, philo->id + 1);
+		printf(CRED "%lld %d died\n" CRESET, time, philo->id + 1);
 		philo->arg->proc_flag = 0;
 	}
 	pthread_mutex_unlock(&philo->arg->print);
@@ -58,10 +58,9 @@ void	ft_philo_eating(t_philo *philo)
 		philo->arg->forks[philo->next_id].status)
 	{
 		ft_philo_stat_print(philo, EATING);
-		philo->last_eat_time = ft_get_time();
 		philo->eat_count++;
-		ft_philo_doing(philo, philo->arg->time_to_eat);
 		philo->last_eat_time = ft_get_time();
+		ft_philo_doing(philo, philo->arg->time_to_eat);
 	}
 	philo->arg->forks[philo->id].status = 0;
 	philo->arg->forks[philo->next_id].status = 0;
