@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seonjeon <seonjeon@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seonjeon <seonjeon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:07:02 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/03/31 15:46:45 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/04/10 18:36:19 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ int	init_forks(t_arg **arg)
 	(*arg)->forks = (t_fork *)malloc(sizeof(t_fork) * (*arg)->num_of_philo);
 	if (!(*arg)->forks)
 		return (1);
+	pthread_mutex_init(&(*arg)->proc_flag_mtx, NULL);
 	i = 0;
 	while (i < (*arg)->num_of_philo)
 	{
 		(*arg)->forks[i].status = 0;
-		pthread_mutex_init(&(*arg)->forks[i].access, NULL);
-		i++;
+		pthread_mutex_init(&(*arg)->forks[i++].access, NULL);
 	}
 	pthread_mutex_init(&(*arg)->print, NULL);
 	return (0);
@@ -72,8 +72,9 @@ t_philo	*init_philo(t_arg *arg)
 		philo[i].next_id = i + 1;
 		if (i + 1 == arg->num_of_philo)
 			philo[i].next_id = 0;
-		philo[i].eat_count = 0;
+		philo[i].eat_count = arg->num_of_times_to_eat;
 		philo[i].last_eat_time = 0;
+		pthread_mutex_init(&philo[i].eat_mtx, NULL);
 		philo[i].arg = arg;
 		i++;
 	}
@@ -90,6 +91,7 @@ void	free_arg(t_arg *arg)
 		while (i < arg->num_of_philo)
 			pthread_mutex_destroy(&arg->forks[i++].access);
 		free(arg->forks);
+		pthread_mutex_destroy(&arg->proc_flag_mtx);
 		pthread_mutex_destroy(&arg->print);
 	}
 	free(arg);
@@ -103,7 +105,10 @@ void	free_philo(t_philo *philo)
 	i = 0;
 	len = philo->arg->num_of_philo;
 	free_arg(philo->arg);
-	while (i++ < len)
+	while (i < len)
+	{
 		philo->arg = NULL;
+		pthread_mutex_destroy(&philo[i++].eat_mtx);
+	}
 	free(philo);
 }

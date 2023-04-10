@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seonjeon <seonjeon@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seonjeon <seonjeon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:02:07 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/03/31 18:17:50 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/04/10 18:51:24 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_arg
 	int				time_to_sleep;
 	int				num_of_times_to_eat;
 	int				proc_flag;
+	pthread_mutex_t	proc_flag_mtx;
 	t_fork			*forks;
 	pthread_mutex_t	print;
 	long long		start_time;
@@ -51,11 +52,12 @@ typedef struct s_arg
 
 typedef struct s_philo
 {
-	int			id;
-	int			next_id;
-	int			eat_count;
-	long long	last_eat_time;
-	t_arg		*arg;
+	int				id;
+	int				next_id;
+	int				eat_count;
+	long long		last_eat_time;
+	pthread_mutex_t	eat_mtx;
+	t_arg			*arg;
 }	t_philo;
 
 //color
@@ -66,7 +68,7 @@ typedef struct s_philo
 
 //philo
 void		*ft_philo_proc(void *data);
-void		ft_check_philo_died(t_arg *arg, t_philo *philo);
+// void		ft_check_philo_died(t_arg *arg, t_philo *philo);
 void		ft_pthread(t_arg *arg, t_philo *philo);
 
 //init
@@ -85,5 +87,7 @@ void		ft_philo_thinking(t_philo *philo);
 
 //utils
 long long	ft_get_time(void);
+int			ft_check_proc_flag(t_philo *philo);
+void		ft_make_zero_proc_flag(t_philo *philo);
 int			ft_atoi(const char *str, int *num);
 #endif

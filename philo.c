@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seonjeon <seonjeon@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seonjeon <seonjeon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 14:48:16 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/03/31 18:24:07 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/04/10 18:50:42 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*ft_philo_proc(void *data)
 	philo = (t_philo *)data;
 	if (philo->id % 2)
 		usleep(100);
-	while (philo->arg->proc_flag)
+	while (ft_check_proc_flag(philo))
 	{
 		pthread_mutex_lock(&philo->arg->forks[philo->id].access);
 		philo->arg->forks[philo->id].status = 1;
@@ -32,6 +32,8 @@ void	*ft_philo_proc(void *data)
 			break ;
 		}
 		ft_philo_eating(philo);
+		if (philo->eat_count == 0)
+			ft_make_zero_proc_flag(philo);
 		ft_philo_sleeping(philo);
 		ft_philo_thinking(philo);
 	}
@@ -41,29 +43,22 @@ void	*ft_philo_proc(void *data)
 void	ft_check_philo_died(t_arg *arg, t_philo *philo)
 {
 	int	i;
-	int	min_cnt;
-	int	init_val;
 
-	init_val = INT_MAX;
-	if (arg->num_of_times_to_eat == -1)
-		init_val = INT_MIN;
-	while (arg->proc_flag)
+	while (ft_check_proc_flag(philo))
 	{
 		i = 0;
-		min_cnt = init_val;
 		while (i < arg->num_of_philo)
 		{
+			pthread_mutex_lock(&philo[i].eat_mtx);
 			if ((ft_get_time() - philo[i].last_eat_time) >= arg->time_to_die)
 			{
 				ft_philo_stat_print(&philo[i], DIED);
+				pthread_mutex_unlock(&philo[i].eat_mtx);
 				return ;
 			}
-			if (philo[i].eat_count < min_cnt)
-				min_cnt = philo[i].eat_count;
+			pthread_mutex_unlock(&philo[i].eat_mtx);
 			i++;
 		}
-		if (min_cnt >= arg->num_of_times_to_eat)
-			arg->proc_flag = 0;
 	}
 }
 
@@ -92,14 +87,8 @@ void	ft_pthread(t_arg *arg, t_philo *philo)
 	free(pthread);
 }
 
-void	leak_test()
-{
-	system("leaks philo");
-}
-
 int	main(int ac, char **av)
 {
-	//atexit(leak_test);
 	t_arg	*arg;
 	t_philo	*philo;
 
