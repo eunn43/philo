@@ -6,7 +6,7 @@
 /*   By: seonjeon <seonjeon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:07:02 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/04/10 18:36:19 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/04/11 20:42:52 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ t_philo	*init_philo(t_arg *arg)
 		philo[i].next_id = i + 1;
 		if (i + 1 == arg->num_of_philo)
 			philo[i].next_id = 0;
-		philo[i].eat_count = arg->num_of_times_to_eat;
+		philo[i].eat_count = 0;
 		philo[i].last_eat_time = 0;
 		pthread_mutex_init(&philo[i].eat_mtx, NULL);
 		philo[i].arg = arg;

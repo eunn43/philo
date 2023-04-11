@@ -6,7 +6,7 @@
 /*   By: seonjeon <seonjeon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:02:07 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/04/10 18:51:24 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/04/11 20:38:01 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_philo
 
 //philo
 void		*ft_philo_proc(void *data);
-// void		ft_check_philo_died(t_arg *arg, t_philo *philo);
+void		ft_check_philo_died(t_philo *philo);
 void		ft_pthread(t_arg *arg, t_philo *philo);
 
 //init
@@ -79,11 +79,10 @@ void		free_arg(t_arg *arg);
 void		free_philo(t_philo *philo);
 
 //philo_utils
-void		ft_philo_doing(t_philo *philo, long long time);
 void		ft_philo_stat_print(t_philo *philo, int stat);
+int			ft_philo_get_left_fork(t_philo *philo);
 void		ft_philo_eating(t_philo *philo);
-void		ft_philo_sleeping(t_philo *philo);
-void		ft_philo_thinking(t_philo *philo);
+void		ft_philo_sleeping_and_thinking(t_philo *philo);
 
 //utils
 long long	ft_get_time(void);

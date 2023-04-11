@@ -6,7 +6,7 @@
 /*   By: seonjeon <seonjeon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 14:48:16 by seonjeon          #+#    #+#             */
-/*   Updated: 2023/04/10 18:50:42 by seonjeon         ###   ########.fr       */
+/*   Updated: 2023/04/11 20:45:11 by seonjeon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,47 +18,47 @@ void	*ft_philo_proc(void *data)
 
 	philo = (t_philo *)data;
 	if (philo->id % 2)
-		usleep(100);
+		usleep(1000);
 	while (ft_check_proc_flag(philo))
 	{
-		pthread_mutex_lock(&philo->arg->forks[philo->id].access);
-		philo->arg->forks[philo->id].status = 1;
-		ft_philo_stat_print(philo, FORK);
-		if (philo->id == philo->next_id)
-		{
-			usleep(philo->arg->time_to_die * 1000);
-			ft_philo_stat_print(philo, DIED);
-			pthread_mutex_unlock(&philo->arg->forks[philo->id].access);
+		if (ft_philo_get_left_fork(philo))
 			break ;
-		}
 		ft_philo_eating(philo);
-		if (philo->eat_count == 0)
-			ft_make_zero_proc_flag(philo);
-		ft_philo_sleeping(philo);
-		ft_philo_thinking(philo);
+		ft_philo_sleeping_and_thinking(philo);
 	}
 	return (NULL);
 }
 
-void	ft_check_philo_died(t_arg *arg, t_philo *philo)
+void	ft_check_philo_died(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->eat_mtx);
+	if (ft_get_time() - philo->last_eat_time >= philo->arg->time_to_die)
+		ft_philo_stat_print(philo, DIED);
+	pthread_mutex_unlock(&philo->eat_mtx);
+}
+
+void	ft_check_philo_stat(t_arg *arg, t_philo *philo)
 {
 	int	i;
+	int	eat_cnt;
 
 	while (ft_check_proc_flag(philo))
 	{
 		i = 0;
-		while (i < arg->num_of_philo)
+		eat_cnt = INT_MAX;
+		if (arg->num_of_times_to_eat == -1)
+			eat_cnt = -1;
+		while (ft_check_proc_flag(philo) && i < arg->num_of_philo)
 		{
+			ft_check_philo_died(&philo[i]);
 			pthread_mutex_lock(&philo[i].eat_mtx);
-			if ((ft_get_time() - philo[i].last_eat_time) >= arg->time_to_die)
-			{
-				ft_philo_stat_print(&philo[i], DIED);
-				pthread_mutex_unlock(&philo[i].eat_mtx);
-				return ;
-			}
+			if (philo[i].eat_count < eat_cnt)
+				eat_cnt = philo[i].eat_count;
 			pthread_mutex_unlock(&philo[i].eat_mtx);
 			i++;
 		}
+		if (eat_cnt >= arg->num_of_times_to_eat)
+			ft_make_zero_proc_flag(philo);
 	}
 }
 
@@ -80,7 +80,7 @@ void	ft_pthread(t_arg *arg, t_philo *philo)
 			return ;
 		i++;
 	}
-	ft_check_philo_died(arg, philo);
+	ft_check_philo_stat(arg, philo);
 	i = 0;
 	while (i < arg->num_of_philo)
 		pthread_join(pthread[i++], NULL);
